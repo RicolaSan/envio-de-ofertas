@@ -37,5 +37,18 @@
     "ordem": 3,
     "criado_em": "2026-07-21T21:40:03.623861",
     "atualizado_em": "2026-07-21T21:40:03.623861"
+  },
+  {
+    "id": "2026-07-21-214818",
+    "slug": "bobo",
+    "titulo": "bobo",
+    "imagem_original": "ofertas/originals/bobo.jpeg",
+    "imagem_publica": "ofertas/bobo.webp",
+    "inicio": "2026-07-21",
+    "fim": "2026-07-22",
+    "ativo": true,
+    "ordem": 4,
+    "criado_em": "2026-07-21T21:48:18.743780",
+    "atualizado_em": "2026-07-21T21:48:18.743780"
   }
 ]

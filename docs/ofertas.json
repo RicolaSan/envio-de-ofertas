@@ -16,5 +16,11 @@
     "titulo": "kaka",
     "imagem": "ofertas/kaka.webp",
     "ordem": 3
+  },
+  {
+    "slug": "bobo",
+    "titulo": "bobo",
+    "imagem": "ofertas/bobo.webp",
+    "ordem": 4
   }
 ]
