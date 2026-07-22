@@ -120,7 +120,8 @@ class SiteBuilderService:
         destino_assets = os.path.join(self.config.site_dir, "assets")
 
         if not os.path.isdir(origem_assets):
-            self._errors.append(f"Diretório de assets não encontrado: {origem_assets}")
+            # Assets não encontrados — não é fatal, apenas avisa
+            print(f"⚠️  Assets não encontrados em: {origem_assets}")
             return
 
         # Copiar CSS

@@ -2,8 +2,35 @@
 
 import subprocess
 import os
+import shutil
 from dataclasses import dataclass
 from typing import Optional
+
+
+# Possíveis locais do Git no Windows
+_GIT_CANDIDATES = [
+    "git",
+    r"C:\Program Files\Git\bin\git.exe",
+    r"C:\Program Files\Git\cmd\git.exe",
+    r"C:\Program Files (x86)\Git\bin\git.exe",
+    r"C:\Program Files (x86)\Git\cmd\git.exe",
+]
+
+
+def _localizar_git() -> str:
+    """Retorna o caminho completo do executável Git."""
+    for caminho in _GIT_CANDIDATES:
+        if caminho == "git":
+            # Tenta encontrar no PATH
+            encontrado = shutil.which("git")
+            if encontrado:
+                return encontrado
+        elif os.path.isfile(caminho):
+            return caminho
+    return "git"  # fallback
+
+
+GIT_EXEC = _localizar_git()
 
 
 @dataclass
@@ -25,7 +52,7 @@ class GitRunner:
         """Executa um comando Git e retorna o resultado."""
         try:
             result = subprocess.run(
-                ["git"] + list(args),
+                [GIT_EXEC] + list(args),
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True,
