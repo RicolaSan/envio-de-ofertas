@@ -14,12 +14,20 @@ from admin.core.paths import ensure_dir
 
 
 class OfferService:
-    """Gerencia ofertas com persistência em JSON."""
+    """Gerencia ofertas com persistência em JSON e sincronização com docs/."""
 
-    def __init__(self, offers_json_path: str, originals_dir: str):
+    def __init__(self, offers_json_path: str, originals_dir: str,
+                 docs_ofertas_dir: str = "", docs_root: str = ""):
         self.offers_json_path = offers_json_path
         self.originals_dir = ensure_dir(originals_dir)
+        self.docs_ofertas_dir = docs_ofertas_dir
+        self.docs_root = docs_root
         self._collection: Optional[OfferCollection] = None
+        self._alteracoes_pendentes = False
+
+    @property
+    def alteracoes_pendentes(self) -> bool:
+        return self._alteracoes_pendentes
 
     # --- Persistência ---
 
@@ -49,6 +57,46 @@ class OfferService:
 
         with open(self.offers_json_path, "w", encoding="utf-8") as f:
             f.write(self._collection.to_json())
+
+        self._alteracoes_pendentes = True
+
+    def sincronizar_docs(self) -> list[str]:
+        """
+        Sincroniza os arquivos públicos (docs/) com os dados atuais.
+        Remove imagens órfãs e regera o JSON público.
+        Retorna lista de ações realizadas.
+        """
+        acoes = []
+        if not self.docs_ofertas_dir or not os.path.isdir(self.docs_ofertas_dir):
+            return acoes
+
+        ativas = self.collection.active()
+        slugs_ativas = {o.slug for o in ativas}
+
+        # 1. Remover imagens órfãs de docs/ofertas/
+        if os.path.isdir(self.docs_ofertas_dir):
+            for arquivo in os.listdir(self.docs_ofertas_dir):
+                if not arquivo.endswith(".webp"):
+                    continue
+                slug = os.path.splitext(arquivo)[0]
+                if slug not in slugs_ativas:
+                    caminho = os.path.join(self.docs_ofertas_dir, arquivo)
+                    try:
+                        os.remove(caminho)
+                        acoes.append(f"🧹 Removeu imagem órfã: {arquivo}")
+                    except OSError:
+                        pass
+
+        # 2. Regenerar docs/ofertas.json
+        if self.docs_root:
+            docs_json_path = os.path.join(self.docs_root, "ofertas.json")
+            dados_publicos = [o.to_public_dict() for o in ativas]
+            import json as _json
+            with open(docs_json_path, "w", encoding="utf-8") as f:
+                _json.dump(dados_publicos, f, ensure_ascii=False, indent=2)
+            acoes.append(f"📄 Regenerou ofertas.json ({len(ativas)} ofertas)")
+
+        return acoes
 
     @property
     def collection(self) -> OfferCollection:
@@ -116,6 +164,7 @@ class OfferService:
 
         self.collection.add(offer)
         self.save()
+        self.sincronizar_docs()
         return offer, None
 
     def editar(self, offer_id: str, titulo: str, inicio: str, fim: str,
@@ -164,24 +213,38 @@ class OfferService:
 
         self.collection.update(offer)
         self.save()
+        self.sincronizar_docs()
         return True, None
 
     def excluir(self, offer_id: str, remover_imagem: bool = True) -> bool:
-        """Exclui uma oferta e opcionalmente sua imagem original."""
+        """Exclui uma oferta, imagem original, imagem pública e sincroniza docs/."""
         offer = self.collection.remove(offer_id)
         if not offer:
             return False
 
+        raiz = os.path.dirname(os.path.dirname(self.offers_json_path))
+
+        # Remove imagem original
         if remover_imagem and offer.imagem_original:
-            img_path = os.path.join(
-                os.path.dirname(self.offers_json_path),
-                "..",
-                offer.imagem_original.replace("/", os.sep)
-            )
+            img_path = os.path.join(raiz, offer.imagem_original.replace("/", os.sep))
             if os.path.isfile(img_path):
                 os.remove(img_path)
 
+        # Remove imagem pública de docs/ofertas/
+        if offer.slug and self.docs_ofertas_dir:
+            img_publica = os.path.join(self.docs_ofertas_dir, f"{offer.slug}.webp")
+            if os.path.isfile(img_publica):
+                os.remove(img_publica)
+
+        # Remove imagem otimizada
+        img_optimized = os.path.join(
+            raiz, "ofertas", "optimized", f"{offer.slug}.webp"
+        )
+        if os.path.isfile(img_optimized):
+            os.remove(img_optimized)
+
         self.save()
+        self.sincronizar_docs()
         return True
 
     def get_all(self) -> list[Offer]:

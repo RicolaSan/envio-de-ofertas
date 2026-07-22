@@ -43,6 +43,8 @@ class MainWindow(ctk.CTk):
         self.offer_service = OfferService(
             config.offers_json_path,
             config.originals_dir,
+            docs_ofertas_dir=os.path.join(config.site_dir, "ofertas"),
+            docs_root=config.site_dir,
         )
         self.image_service = ImageService(
             config.originals_dir,
@@ -169,6 +171,30 @@ class MainWindow(ctk.CTk):
             anchor="w",
         )
         self.status_label.pack(fill="x")
+
+        self.pendentes_label = ctk.CTkLabel(
+            info_frame,
+            text="",
+            font=("Segoe UI", 10),
+            text_color=COR_LARANJA,
+            anchor="w",
+        )
+        self.pendentes_label.pack(fill="x")
+
+    def _atualizar_status_pendentes(self):
+        """Atualiza indicador de alterações não publicadas."""
+        if self.offer_service.alteracoes_pendentes:
+            self.pendentes_label.configure(
+                text="⚠️  Alterações não publicadas",
+                text_color=COR_LARANJA,
+            )
+            # Destacar botão Publicar na sidebar
+            if "publicar" in self._nav_buttons:
+                self._nav_buttons["publicar"].configure(
+                    text_color=COR_ACENTO,
+                )
+        else:
+            self.pendentes_label.configure(text="")
 
     def _build_main_content(self):
         # Frame principal do conteúdo
@@ -350,6 +376,7 @@ class MainWindow(ctk.CTk):
     def _load_offers(self):
         offers = self.offer_service.get_all()
         self.offer_list.load_offers(offers, self.config.originals_dir)
+        self._atualizar_status_pendentes()
 
     def _filter_offers(self):
         termo = self.filters.get_search_term()
@@ -417,6 +444,9 @@ class MainWindow(ctk.CTk):
                 self.builder.get_summary(collection)
             )
             self.publish_panel.on_publish_success(result.output)
+            # Limpar indicador de alterações pendentes
+            self.offer_service._alteracoes_pendentes = False
+            self._atualizar_status_pendentes()
         else:
             self.publish_panel.on_publish_error(result.error)
 
