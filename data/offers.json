@@ -1,18 +1,5 @@
 [
   {
-    "id": "2026-07-21-212028",
-    "slug": "linguiuça",
-    "titulo": "linguiuça",
-    "imagem_original": "ofertas/originals/linguiuça.jpeg",
-    "imagem_publica": "ofertas/linguiuça.webp",
-    "inicio": "2026-07-21",
-    "fim": "2026-07-22",
-    "ativo": true,
-    "ordem": 2,
-    "criado_em": "2026-07-21T21:20:28.128473",
-    "atualizado_em": "2026-07-21T21:20:28.128473"
-  },
-  {
     "id": "2026-07-21-214003",
     "slug": "kaka",
     "titulo": "kaka",
