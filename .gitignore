@@ -26,6 +26,10 @@ ofertas/optimized/*
 !ofertas/originals/.gitkeep
 !ofertas/optimized/.gitkeep
 
+# Executável gerado (cada máquina gera o seu)
+AdminOfertas.exe
+*.spec
+
 # Config with local paths
 config/publishing.json
 

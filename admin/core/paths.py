@@ -1,13 +1,21 @@
 """Utilitários para resolução de caminhos do projeto."""
 
 import os
+import sys
 from pathlib import Path
 
 
 def find_project_root() -> str:
-    """Encontra a raiz do projeto a partir da localização deste arquivo."""
+    """
+    Encontra a raiz do projeto.
+    - Em modo script: sobe de admin/core/paths.py -> admin/core -> admin -> raiz
+    - Em modo .exe (PyInstaller): usa a pasta onde o .exe está
+    """
+    if getattr(sys, 'frozen', False):
+        # Modo PyInstaller: o .exe está na raiz do projeto
+        return str(Path(sys.executable).resolve().parent)
+    # Modo script Python
     current = Path(__file__).resolve()
-    # Sobe de: admin/core/paths.py -> admin/core -> admin -> raiz
     return str(current.parents[2])
 
 
