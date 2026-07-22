@@ -115,18 +115,35 @@ class SiteBuilderService:
             self._errors.append(f"Template não encontrado: {template_name}")
 
     def _copy_assets(self) -> None:
-        """Copia assets (CSS, JS, imagens) para o diretório site/."""
-        # CSS
-        src_css = os.path.join(self.config.site_dir, "assets", "css")
-        os.makedirs(src_css, exist_ok=True)
+        """Copia assets (CSS, JS) do diretório src/assets/ para o site/."""
+        origem_assets = os.path.join(self.config.root_dir, "src", "assets")
+        destino_assets = os.path.join(self.config.site_dir, "assets")
 
-        # JS
-        src_js = os.path.join(self.config.site_dir, "assets", "js")
-        os.makedirs(src_js, exist_ok=True)
+        if not os.path.isdir(origem_assets):
+            self._errors.append(f"Diretório de assets não encontrado: {origem_assets}")
+            return
 
-        # Imagens de asset
-        src_img = os.path.join(self.config.site_dir, "assets", "img")
-        os.makedirs(src_img, exist_ok=True)
+        # Copiar CSS
+        origem_css = os.path.join(origem_assets, "css")
+        destino_css = os.path.join(destino_assets, "css")
+        os.makedirs(destino_css, exist_ok=True)
+        if os.path.isdir(origem_css):
+            for f in os.listdir(origem_css):
+                if f.endswith(".css"):
+                    shutil.copy2(os.path.join(origem_css, f), os.path.join(destino_css, f))
+
+        # Copiar JS
+        origem_js = os.path.join(origem_assets, "js")
+        destino_js = os.path.join(destino_assets, "js")
+        os.makedirs(destino_js, exist_ok=True)
+        if os.path.isdir(origem_js):
+            for f in os.listdir(origem_js):
+                if f.endswith(".js"):
+                    shutil.copy2(os.path.join(origem_js, f), os.path.join(destino_js, f))
+
+        # Diretório de imagens
+        destino_img = os.path.join(destino_assets, "img")
+        os.makedirs(destino_img, exist_ok=True)
 
         # Favicon
         favicon_src = os.path.join(self.config.root_dir, "assets", "favicon", "favicon.ico")
