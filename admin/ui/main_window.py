@@ -406,12 +406,14 @@ class MainWindow(ctk.CTk):
 
     def _save_new_offer(self, titulo, inicio, fim, ativo, imagem, _):
         self.offer_service.criar(titulo, imagem, inicio, fim, ativo)
+        self._auto_commit()
         self._load_offers()
 
     def _save_edit_offer(self, titulo, inicio, fim, ativo, imagem, offer):
         self.offer_service.editar(
             offer.id, titulo, inicio, fim, ativo, imagem,
         )
+        self._auto_commit()
         self._load_offers()
 
     def _confirm_delete(self, offer: Offer):
@@ -424,8 +426,21 @@ class MainWindow(ctk.CTk):
 
     def _executar_exclusao(self, offer: Offer):
         self.offer_service.excluir(offer.id)
+        self._auto_commit()
         self._load_offers()
         self._atualizar_stats()
+
+    # --- Auto-commit após alterações locais ---
+
+    def _auto_commit(self):
+        """Commite as alterações locais automaticamente."""
+        try:
+            from datetime import datetime
+            msg = f"feat: atualizar ofertas - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            self.git_runner.add_all()
+            self.git_runner.commit(msg)
+        except Exception:
+            pass  # Falha no auto-commit não é crítica
 
     # --- Publicação ---
 
