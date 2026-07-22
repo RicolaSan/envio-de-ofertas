@@ -14,11 +14,14 @@
     <meta name="twitter:description" content="{{DESCRICAO}}">
     <meta name="twitter:image" content="{{URL}}/{{IMAGEM_PADRAO}}">
     <meta name="theme-color" content="{{COR_FUNDO}}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="canonical" href="{{URL}}">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>{{NOME}}</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css?{{VERSAO}}">
 </head>
 <body>
     <div id="app" role="main" aria-label="Ofertas">
@@ -51,12 +54,13 @@
     </div>
     <script>
         window.OfertasConfig = {
-            ofertasUrl: 'ofertas.json',
-            corPrimaria: '{{COR_PRIMARIA}}'
+            ofertasUrl: 'ofertas.json?v={{VERSAO}}',
+            corPrimaria: '{{COR_PRIMARIA}}',
+            versao: '{{VERSAO}}'
         };
     </script>
-    <script src="assets/js/story-viewer.js"></script>
-    <script src="assets/js/gestures.js"></script>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/story-viewer.js?{{VERSAO}}"></script>
+    <script src="assets/js/gestures.js?{{VERSAO}}"></script>
+    <script src="assets/js/app.js?{{VERSAO}}"></script>
 </body>
 </html>

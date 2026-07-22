@@ -59,7 +59,9 @@ class SiteBuilderService:
         with open(os.path.join(self.config.site_dir, "ofertas.json"), "w", encoding="utf-8") as f:
             f.write(public_json)
 
-        # 5. Gerar index.html
+        # 5. Gerar index.html (com versão para cache busting)
+        from datetime import datetime
+        versao = datetime.now().strftime("%Y%m%d%H%M%S")
         self._render_template("index.template.html", "index.html", {
             "NOME": self.config.site.nome,
             "DESCRICAO": self.config.site.descricao,
@@ -69,6 +71,7 @@ class SiteBuilderService:
             "COR_FUNDO": self.config.site.cor_fundo,
             "COR_TEXTO": self.config.site.cor_texto,
             "IMAGEM_PADRAO": self.config.site.imagem_padrao,
+            "VERSAO": versao,
         })
 
         # 6. Gerar manifest.webmanifest
