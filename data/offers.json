@@ -50,5 +50,18 @@
     "ordem": 4,
     "criado_em": "2026-07-21T21:48:18.743780",
     "atualizado_em": "2026-07-21T21:48:18.743780"
+  },
+  {
+    "id": "2026-07-21-215620",
+    "slug": "kakakakak",
+    "titulo": "kakakakak",
+    "imagem_original": "ofertas/originals/kakakakak.jpeg",
+    "imagem_publica": "ofertas/kakakakak.webp",
+    "inicio": "2026-07-20",
+    "fim": "2026-07-21",
+    "ativo": true,
+    "ordem": 5,
+    "criado_em": "2026-07-21T21:56:20.519590",
+    "atualizado_em": "2026-07-21T21:56:20.519590"
   }
 ]

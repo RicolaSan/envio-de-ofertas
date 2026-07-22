@@ -22,5 +22,11 @@
     "titulo": "bobo",
     "imagem": "ofertas/bobo.webp",
     "ordem": 4
+  },
+  {
+    "slug": "kakakakak",
+    "titulo": "kakakakak",
+    "imagem": "ofertas/kakakakak.webp",
+    "ordem": 5
   }
 ]
