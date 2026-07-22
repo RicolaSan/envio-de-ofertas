@@ -64,7 +64,7 @@ class AppConfig:
 
     @property
     def site_dir(self) -> str:
-        return os.path.join(self.root_dir, "site")
+        return os.path.join(self.root_dir, "docs")
 
     @property
     def offers_dir(self) -> str:
