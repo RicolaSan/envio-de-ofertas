@@ -2,7 +2,7 @@
   "name": "Ofertas do Mercado",
   "short_name": "Ofertas do Mercado",
   "description": "Confira as ofertas do seu mercado favorito",
-  "start_url": "https://seu-usuario.github.io/envio-de-ofertas",
+  "start_url": "https://RicolaSan.github.io/envio-de-ofertas",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",

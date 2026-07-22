@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://seu-usuario.github.io/envio-de-ofertas/sitemap.xml
+Sitemap: https://RicolaSan.github.io/envio-de-ofertas/sitemap.xml
