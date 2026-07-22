@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Confira as ofertas do seu mercado favorito">
+    <meta property="og:title" content="Ofertas do Mercado">
+    <meta property="og:description" content="Confira as ofertas do seu mercado favorito">
+    <meta property="og:url" content="https://seu-usuario.github.io/envio-de-ofertas">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://seu-usuario.github.io/envio-de-ofertas/assets/img/default-offer.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ofertas do Mercado">
+    <meta name="twitter:description" content="Confira as ofertas do seu mercado favorito">
+    <meta name="twitter:image" content="https://seu-usuario.github.io/envio-de-ofertas/assets/img/default-offer.jpg">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://seu-usuario.github.io/envio-de-ofertas">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Ofertas do Mercado</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div id="app" role="main" aria-label="Ofertas">
+        <div id="story-container" aria-live="polite">
+            <!-- Ofertas serão renderizadas aqui -->
+        </div>
+        <div id="empty-state" class="hidden" aria-hidden="true">
+            <div class="empty-content">
+                <svg class="empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#c8a96e" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <h2>Nenhuma oferta disponível no momento</h2>
+                <p>Volte mais tarde para conferir nossas promoções.</p>
+            </div>
+        </div>
+        <nav id="story-nav" class="hidden" aria-label="Navegação">
+            <button id="btn-prev" class="nav-btn" aria-label="Oferta anterior">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <button id="btn-next" class="nav-btn" aria-label="Próxima oferta">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </button>
+        </nav>
+    </div>
+    <script>
+        window.OfertasConfig = {
+            ofertasUrl: 'ofertas.json',
+            corPrimaria: '#c8a96e'
+        };
+    </script>
+    <script src="assets/js/story-viewer.js"></script>
+    <script src="assets/js/gestures.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

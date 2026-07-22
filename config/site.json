@@ -1,0 +1,13 @@
+{
+  "nome": "Ofertas do Mercado",
+  "descricao": "Confira as ofertas do seu mercado favorito",
+  "url": "https://seu-usuario.github.io/envio-de-ofertas",
+  "idioma": "pt-BR",
+  "tema": "escuro",
+  "cor_primaria": "#c8a96e",
+  "cor_fundo": "#1a1a1a",
+  "cor_texto": "#f5f5f5",
+  "imagem_padrao": "assets/img/default-offer.jpg",
+  "autor": "Administrador",
+  "twitter": "@seudominio"
+}

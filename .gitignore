@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project data (local)
+data/backups/
+ofertas/originals/*
+ofertas/optimized/*
+!ofertas/originals/.gitkeep
+!ofertas/optimized/.gitkeep
+
+# Config with local paths
+config/publishing.json
+
+# Generated site (will be published separately)
+# site/ is kept in git for the published branch
