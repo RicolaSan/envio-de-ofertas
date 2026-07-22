@@ -10,5 +10,11 @@
     "titulo": "linguiuça",
     "imagem": "ofertas/linguiuça.webp",
     "ordem": 2
+  },
+  {
+    "slug": "kaka",
+    "titulo": "kaka",
+    "imagem": "ofertas/kaka.webp",
+    "ordem": 3
   }
 ]

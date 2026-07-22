@@ -58,17 +58,23 @@ class GitRunner:
                 text=True,
                 timeout=60,
             )
+            saida = (result.stdout or "").strip()
+            erros = (result.stderr or "").strip()
             if result.returncode == 0:
-                return GitResult(success=True, output=result.stdout.strip())
+                # Git costuma enviar mensagens para stderr mesmo em sucesso
+                mensagem = saida or erros
+                return GitResult(success=True, output=mensagem)
             return GitResult(
                 success=False,
-                output=result.stdout.strip(),
-                error=result.stderr.strip(),
+                output=saida,
+                error=erros or "Comando Git falhou sem mensagem de erro.",
             )
         except subprocess.TimeoutExpired:
-            return GitResult(success=False, output="", error="Comando Git excedeu o tempo limite.")
+            return GitResult(success=False, output="", error="Comando Git excedeu o tempo limite (60s).")
         except FileNotFoundError:
             return GitResult(success=False, output="", error="Git não encontrado. Instale o Git e tente novamente.")
+        except Exception as e:
+            return GitResult(success=False, output="", error=f"Erro inesperado no Git: {e}")
 
     def check_git_installed(self) -> GitResult:
         """Verifica se o Git está instalado e configurado."""

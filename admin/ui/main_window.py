@@ -154,8 +154,12 @@ class MainWindow(ctk.CTk):
     def _publish_site(self):
         self.publish_panel.on_publish_start()
 
-        collection = self.offer_service.collection
-        result = self.publisher.publish(collection)
+        try:
+            collection = self.offer_service.collection
+            result = self.publisher.publish(collection)
+        except Exception as e:
+            self.publish_panel.on_publish_error(f"Exceção: {e}")
+            return
 
         if result.success:
             self.publish_panel.on_build_complete(
