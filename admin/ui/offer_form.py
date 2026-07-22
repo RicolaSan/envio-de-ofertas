@@ -16,6 +16,85 @@ MESES_PT = [
     "Setembro", "Outubro", "Novembro", "Dezembro",
 ]
 
+COR_BG = "#0d0d0d"
+COR_CARD = "#1a1a1a"
+COR_ACENTO = "#c8a96e"
+COR_ACENTO_HOVER = "#d4b87a"
+COR_TEXTO = "#f5f5f5"
+COR_TEXTO_SEC = "#888888"
+COR_BORDA = "#2a2a2a"
+COR_VERMELHO = "#f44336"
+
+
+class ConfirmDialog(ctk.CTkToplevel):
+    """Diálogo moderno de confirmação de exclusão."""
+
+    def __init__(self, master, titulo: str, on_confirm: Optional[Callable] = None):
+        super().__init__(master)
+        self.on_confirm = on_confirm
+
+        self.title("Confirmar Exclusão")
+        self.geometry("380x200")
+        self.configure(fg_color=COR_BG)
+        self.resizable(False, False)
+
+        self.update_idletasks()
+        x = master.winfo_rootx() + (master.winfo_width() - 380) // 2
+        y = master.winfo_rooty() + (master.winfo_height() - 200) // 2
+        self.geometry(f"+{x}+{y}")
+
+        self.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            self,
+            text="🗑️  Excluir Oferta",
+            font=("Segoe UI", 18, "bold"),
+            text_color=COR_TEXTO,
+        ).grid(row=0, column=0, pady=(24, 4), padx=24, sticky="w")
+
+        ctk.CTkLabel(
+            self,
+            text=f'Tem certeza que deseja excluir "{titulo}"?',
+            font=("Segoe UI", 12),
+            text_color=COR_TEXTO_SEC,
+            wraplength=320,
+            justify="left",
+        ).grid(row=1, column=0, pady=(4, 16), padx=24, sticky="w")
+
+        btn_frame = ctk.CTkFrame(self, fg_color="transparent")
+        btn_frame.grid(row=2, column=0, padx=24, pady=(0, 20), sticky="ew")
+        btn_frame.grid_columnconfigure((0, 1), weight=1)
+
+        ctk.CTkButton(
+            btn_frame,
+            text="Cancelar",
+            command=self.destroy,
+            fg_color=COR_BORDA,
+            hover_color="#444444",
+            text_color=COR_TEXTO,
+            height=36,
+            corner_radius=8,
+        ).grid(row=0, column=0, padx=(0, 6), sticky="ew")
+
+        ctk.CTkButton(
+            btn_frame,
+            text="🗑️  Excluir",
+            fg_color=COR_VERMELHO,
+            hover_color="#ff6659",
+            text_color=COR_TEXTO,
+            height=36,
+            corner_radius=8,
+            command=self._confirmar,
+        ).grid(row=0, column=1, padx=(6, 0), sticky="ew")
+
+        self.grab_set()
+        self.focus_set()
+
+    def _confirmar(self):
+        if self.on_confirm:
+            self.on_confirm()
+        self.destroy()
+
 
 def _formatar_data(d: date) -> str:
     """Formata uma data no padrão brasileiro legível."""
@@ -60,97 +139,109 @@ class OfferForm(ctk.CTkToplevel):
         self.focus_set()
 
     def _build_ui(self, is_edit: bool):
+        self.configure(fg_color=COR_BG)
         self.grid_columnconfigure(0, weight=1)
 
-        # Título
+        # Título com ícone grande
         title_text = "✏️ Editar Oferta" if is_edit else "➕ Nova Oferta"
         ctk.CTkLabel(
             self,
             text=title_text,
-            font=("Segoe UI", 18, "bold"),
-        ).grid(row=0, column=0, pady=(20, 8), padx=20, sticky="w")
+            font=("Segoe UI", 20, "bold"),
+            text_color=COR_TEXTO,
+        ).grid(row=0, column=0, pady=(24, 4), padx=24, sticky="w")
 
-        # Subtítulo
         ctk.CTkLabel(
             self,
-            text="Preencha os dados da oferta",
+            text="Preencha os dados abaixo",
             font=("Segoe UI", 12),
-            text_color="#999999",
-        ).grid(row=1, column=0, pady=(0, 16), padx=20, sticky="w")
+            text_color=COR_TEXTO_SEC,
+        ).grid(row=1, column=0, pady=(0, 16), padx=24, sticky="w")
 
         # Campos
-        form_frame = ctk.CTkFrame(self, fg_color="transparent")
-        form_frame.grid(row=2, column=0, padx=20, sticky="ew")
+        form_frame = ctk.CTkFrame(self, fg_color=COR_CARD, corner_radius=10)
+        form_frame.grid(row=2, column=0, padx=24, pady=0, sticky="ew")
         form_frame.grid_columnconfigure(1, weight=1)
 
-        # Título
-        ctk.CTkLabel(form_frame, text="Título:").grid(row=0, column=0, pady=6, padx=(0, 8), sticky="w")
-        self.titulo_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Alho Roxo")
-        self.titulo_entry.grid(row=0, column=1, pady=6, sticky="ew")
+        LABEL_KW = {"text_color": COR_TEXTO_SEC, "font": ("Segoe UI", 12)}
+        ENTRY_KW = {
+            "fg_color": COR_BG, "border_color": COR_BORDA,
+            "text_color": COR_TEXTO,
+        }
+        BTN_KW = {
+            "fg_color": COR_BORDA, "hover_color": "#444444",
+            "text_color": COR_TEXTO, "corner_radius": 6,
+            "font": ("Segoe UI", 11),
+        }
 
-        # Data Início (com DatePicker)
-        ctk.CTkLabel(form_frame, text="Data Início:").grid(row=1, column=0, pady=6, padx=(0, 8), sticky="w")
+        padding = {"padx": 16, "pady": (10, 0)}
+
+        # Título
+        ctk.CTkLabel(form_frame, text="Título:", **LABEL_KW).grid(
+            row=0, column=0, **padding, sticky="w")
+        self.titulo_entry = ctk.CTkEntry(
+            form_frame, placeholder_text="Ex: Alho Roxo", **ENTRY_KW)
+        self.titulo_entry.grid(row=0, column=1, **padding, sticky="ew")
+
+        # Data Início
+        ctk.CTkLabel(form_frame, text="Data Início:", **LABEL_KW).grid(
+            row=1, column=0, **padding, sticky="w")
         inicio_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        inicio_frame.grid(row=1, column=1, pady=6, sticky="ew")
+        inicio_frame.grid(row=1, column=1, **padding, sticky="ew")
 
         self.inicio_label = ctk.CTkLabel(
             inicio_frame,
             text="📅  Selecione a data de início",
-            anchor="w",
-            text_color="#999999",
+            anchor="w", text_color=COR_TEXTO_SEC,
+            font=("Segoe UI", 12),
         )
         self.inicio_label.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
         self.inicio_btn = ctk.CTkButton(
             inicio_frame,
-            text="Selecionar",
-            width=90,
-            height=30,
-            font=("Segoe UI", 11),
+            text="📅", width=40, height=32, **BTN_KW,
             command=lambda: self._abrir_date_picker("inicio"),
         )
         self.inicio_btn.pack(side="right")
 
-        # Data Fim (com DatePicker)
-        ctk.CTkLabel(form_frame, text="Data Fim:").grid(row=2, column=0, pady=6, padx=(0, 8), sticky="w")
+        # Data Fim
+        ctk.CTkLabel(form_frame, text="Data Fim:", **LABEL_KW).grid(
+            row=2, column=0, **padding, sticky="w")
         fim_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        fim_frame.grid(row=2, column=1, pady=6, sticky="ew")
+        fim_frame.grid(row=2, column=1, **padding, sticky="ew")
 
         self.fim_label = ctk.CTkLabel(
             fim_frame,
             text="📅  Selecione a data de fim",
-            anchor="w",
-            text_color="#999999",
+            anchor="w", text_color=COR_TEXTO_SEC,
+            font=("Segoe UI", 12),
         )
         self.fim_label.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
         self.fim_btn = ctk.CTkButton(
             fim_frame,
-            text="Selecionar",
-            width=90,
-            height=30,
-            font=("Segoe UI", 11),
+            text="📅", width=40, height=32, **BTN_KW,
             command=lambda: self._abrir_date_picker("fim"),
         )
         self.fim_btn.pack(side="right")
 
         # Imagem
-        ctk.CTkLabel(form_frame, text="Imagem:").grid(row=3, column=0, pady=6, padx=(0, 8), sticky="w")
+        ctk.CTkLabel(form_frame, text="Imagem:", **LABEL_KW).grid(
+            row=3, column=0, **padding, sticky="w")
         img_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        img_frame.grid(row=3, column=1, pady=6, sticky="ew")
+        img_frame.grid(row=3, column=1, **padding, sticky="ew")
 
         self.img_path_label = ctk.CTkLabel(
             img_frame,
             text="Nenhum arquivo selecionado",
-            text_color="#999999",
-            anchor="w",
+            text_color=COR_TEXTO_SEC, anchor="w",
+            font=("Segoe UI", 12),
         )
         self.img_path_label.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
         self.img_btn = ctk.CTkButton(
             img_frame,
-            text="📁 Selecionar",
-            width=100,
+            text="📁 Selecionar", width=90, height=32, **BTN_KW,
             command=self._select_image,
         )
         self.img_btn.pack(side="right")
@@ -161,47 +252,57 @@ class OfferForm(ctk.CTkToplevel):
             form_frame,
             text="Oferta ativa",
             variable=self._ativo_var,
+            text_color=COR_TEXTO,
+            font=("Segoe UI", 12),
         )
-        self.ativo_check.grid(row=4, column=1, pady=12, sticky="w")
+        self.ativo_check.grid(row=4, column=1, **padding, sticky="w")
 
-        # Preview da imagem
+        # Preview
         self.preview_label = ctk.CTkLabel(
             form_frame,
             text="",
-            width=480,
-            height=120,
+            width=460, height=100,
             corner_radius=6,
+            fg_color=COR_BG,
         )
-        self.preview_label.grid(row=5, column=0, columnspan=2, pady=(8, 0), sticky="ew")
+        self.preview_label.grid(row=5, column=0, columnspan=2,
+                                padx=16, pady=(8, 12), sticky="ew")
 
         # Mensagem de erro
         self.error_label = ctk.CTkLabel(
             self,
             text="",
-            text_color="#f44336",
+            text_color=COR_VERMELHO,
             font=("Segoe UI", 11),
             wraplength=460,
         )
-        self.error_label.grid(row=3, column=0, pady=(8, 0), padx=20, sticky="w")
+        self.error_label.grid(row=3, column=0, pady=(8, 0), padx=24, sticky="w")
 
         # Botões
         btn_frame = ctk.CTkFrame(self, fg_color="transparent")
-        btn_frame.grid(row=4, column=0, pady=(16, 20), padx=20, sticky="ew")
+        btn_frame.grid(row=4, column=0, pady=(16, 24), padx=24, sticky="ew")
 
         ctk.CTkButton(
             btn_frame,
             text="Cancelar",
             command=self.destroy,
-            fg_color="#333333",
+            fg_color=COR_BORDA,
             hover_color="#444444",
-            width=100,
+            text_color=COR_TEXTO,
+            width=100, height=36,
+            corner_radius=8,
         ).pack(side="left", padx=(0, 8))
 
         self.save_btn = ctk.CTkButton(
             btn_frame,
-            text="💾 Salvar",
+            text="💾  Salvar",
             command=self._save,
-            width=120,
+            width=120, height=36,
+            fg_color=COR_ACENTO,
+            hover_color=COR_ACENTO_HOVER,
+            text_color=COR_BG,
+            corner_radius=8,
+            font=("Segoe UI", 12, "bold"),
         )
         self.save_btn.pack(side="right")
 
@@ -232,6 +333,19 @@ class OfferForm(ctk.CTkToplevel):
                 text_color="#f5f5f5",
             )
 
+    def _atualizar_preview(self, path: str):
+        """Atualiza o preview da imagem selecionada."""
+        try:
+            from PIL import Image
+            from customtkinter import CTkImage
+            img = Image.open(path)
+            img.thumbnail((460, 100), Image.LANCZOS)
+            ctk_img = CTkImage(light_image=img, dark_image=img,
+                               size=(img.width, img.height))
+            self.preview_label.configure(image=ctk_img, text="")
+        except Exception:
+            pass
+
     def _populate(self, offer: Offer):
         """Preenche o formulário com dados de uma oferta existente."""
         self.titulo_entry.insert(0, offer.titulo)
@@ -255,22 +369,15 @@ class OfferForm(ctk.CTkToplevel):
             ("Imagens", "*.jpg *.jpeg *.png *.webp"),
             ("Todos os arquivos", "*.*"),
         ]
-        path = filedialog.askopenfilename(title="Selecionar Imagem", filetypes=filetypes)
+        path = filedialog.askopenfilename(
+            title="Selecionar Imagem", filetypes=filetypes,
+        )
         if path:
             self._selected_image = path
-            self.img_path_label.configure(text=os.path.basename(path))
-
-            # Preview
-            try:
-                from PIL import Image
-                from customtkinter import CTkImage
-                img = Image.open(path)
-                img.thumbnail((480, 120), Image.LANCZOS)
-                ctk_img = CTkImage(light_image=img, dark_image=img,
-                                   size=(img.width, img.height))
-                self.preview_label.configure(image=ctk_img, text="")
-            except Exception:
-                pass
+            self.img_path_label.configure(
+                text=os.path.basename(path), text_color=COR_TEXTO,
+            )
+            self._atualizar_preview(path)
 
     def _save(self):
         """Valida e dispara o callback de salvamento."""
