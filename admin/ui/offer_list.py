@@ -34,7 +34,8 @@ class OfferList(ctk.CTkScrollableFrame):
 
     def load_offers(self, offers: list[Offer], originals_dir: str = ""):
         """Recarrega a lista com as ofertas fornecidas."""
-        for widget in self._cards.values():
+        # Limpar TUDO (cards + empty state)
+        for widget in self.winfo_children():
             widget.destroy()
         self._cards.clear()
         self._offer_data.clear()
